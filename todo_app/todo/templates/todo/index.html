@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for task in object_list %}
+        <li>{{ task.name }}</li>
+        <li>{{ task.desc }}</li>
+        <li>{{ task.status }}</li>
+        <li>{{ task.date }}</li>
+        <div class="link-task">
+            <form action="{% url 'change-status' task.pk %}" method="get">
+                {% csrf_token %}
+                {% if task.status %}
+                    <input type="submit" value="Not completed" style="color: white; background-color: red;">
+                {% else %}
+                    <input type="submit" value="Completed" style="color: white; background-color: green;">
+                {% endif %}
+            </form>
+            
+            <a href="{% url 'edit' task.pk %}" style="border: 5px solid darkslategray;">Edit task {{ task.name }}</a>
+            <a href="{% url 'delete' task.pk %}" style="border: 5px solid darkslategray;">Delete task {{ task.name }}</a>
+        </div>
+        <h1>__________</h1>
+    {% empty %}
+        <h1>No yet tasks</h1>
+    {% endfor %}
+    <div>
+        <span>
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span>
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    <a href="{% url 'create' %}" style="border: 5px solid darkslategray; position: relative; left: 46vw;">Create task</a>
+{% endblock %}
